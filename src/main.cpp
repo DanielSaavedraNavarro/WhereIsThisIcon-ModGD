@@ -1,40 +1,38 @@
 #include <Geode/Geode.hpp>
-#include <Geode/modify/MenuLayer.hpp>
+#include <Geode/modify/CreatorLayer.hpp>
 
 using namespace geode::prelude;
 
-class $modify(WhereIsThisIconMenuLayer, MenuLayer) {
+class $modify(WhereIsThisIconCreatorLayer, CreatorLayer) {
     bool init() {
-        if (!MenuLayer::init())
+        if (!CreatorLayer::init())
             return false;
 
-        auto menu = this->getChildByID("bottom-menu");
+        auto sprite = CCSprite::create("infoMenu.png"_spr);
 
-        if (menu) {
-            auto sprite = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
+        if (!sprite)
+            return true;
 
-            if (sprite) {
-                auto button = CCMenuItemSpriteExtra::create(
-                    sprite,
-                    this,
-                    menu_selector(WhereIsThisIconMenuLayer::onWhereIsThisIcon)
-                );
+        sprite->setScale(0.8f);
 
-                button->setID("where-is-this-icon-button"_spr);
+        auto button = CCMenuItemSpriteExtra::create(
+            sprite,
+            this,
+            menu_selector(WhereIsThisIconCreatorLayer::onWhereIsThisIcon)
+        );
 
-                menu->addChild(button);
-                menu->updateLayout();
-            }
-        }
+        button->setID("where-is-this-icon-button"_spr);
+
+        auto menu = CCMenu::create();
+        menu->setPosition({300.f, 40.f});
+
+        menu->addChild(button);
+        this->addChild(menu);
 
         return true;
     }
 
     void onWhereIsThisIcon(CCObject*) {
-        FLAlertLayer::create(
-            "Where Is This Icon?",
-            "¡El botón funciona! :D",
-            "OK"
-        )->show();
+        log::info("Where Is This Icon clicked!");
     }
 };
