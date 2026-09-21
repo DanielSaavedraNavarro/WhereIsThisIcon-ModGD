@@ -10,21 +10,33 @@ class $modify(WhereIsThisIconCreatorLayer, CreatorLayer) {
 
         auto sprite = CCSprite::create("infoMenu.png"_spr);
 
-        if (!sprite)
+        if (!sprite) {
+            log::error("No se pudo cargar infoMenu.png");
             return true;
+        }
 
-        sprite->setScale(0.8f);
+        // Un poco más grande
+        sprite->setScale(1.15f);
 
         auto button = CCMenuItemSpriteExtra::create(
             sprite,
             this,
-            menu_selector(WhereIsThisIconCreatorLayer::onWhereIsThisIcon)
+            menu_selector(
+                WhereIsThisIconCreatorLayer::onWhereIsThisIcon
+            )
         );
 
         button->setID("where-is-this-icon-button"_spr);
 
+        // Menú independiente para poder posicionarlo fácilmente
         auto menu = CCMenu::create();
-        menu->setPosition({300.f, 40.f});
+        menu->setID("where-is-this-icon-menu"_spr);
+
+        // Esquina inferior izquierda
+        menu->setPosition({
+            35.f,
+            35.f
+        });
 
         menu->addChild(button);
         this->addChild(menu);
@@ -33,6 +45,10 @@ class $modify(WhereIsThisIconCreatorLayer, CreatorLayer) {
     }
 
     void onWhereIsThisIcon(CCObject*) {
-        log::info("Where Is This Icon clicked!");
+        FLAlertLayer::create(
+            "Where Is This Icon?",
+            "El botón funciona correctamente.",
+            "OK"
+        )->show();
     }
 };
