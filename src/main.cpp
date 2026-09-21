@@ -3,17 +3,24 @@
 
 using namespace geode::prelude;
 
+
 // ============================================================
 // GAME WITI MENU
 // ============================================================
 
 class GameWITIMenuLayer : public CCLayer {
+
+private:
+    CreatorLayer* m_creatorLayer = nullptr;
+
 public:
 
-    static GameWITIMenuLayer* create() {
+    static GameWITIMenuLayer* create(
+        CreatorLayer* creatorLayer
+    ) {
         auto ret = new GameWITIMenuLayer();
 
-        if (ret && ret->init()) {
+        if (ret && ret->init(creatorLayer)) {
             ret->autorelease();
             return ret;
         }
@@ -22,13 +29,41 @@ public:
         return nullptr;
     }
 
-    bool init() {
+
+    bool init(CreatorLayer* creatorLayer) {
+
         if (!CCLayer::init())
             return false;
 
-        this->setTouchEnabled(true);
+        m_creatorLayer = creatorLayer;
 
-        auto winSize = CCDirector::sharedDirector()->getWinSize();
+        auto winSize =
+            CCDirector::sharedDirector()->getWinSize();
+
+
+        // ====================================================
+        // DESACTIVAR TODOS LOS MENÚS DEL CREATORLAYER
+        // ====================================================
+
+        if (m_creatorLayer) {
+
+            auto children = m_creatorLayer->getChildren();
+
+            for (unsigned int i = 0; i < children->count(); i++) {
+
+                auto child =
+                    static_cast<CCNode*>(
+                        children->objectAtIndex(i)
+                    );
+
+                if (auto menu =
+                    typeinfo_cast<CCMenu*>(child)) {
+
+                    menu->setEnabled(false);
+                }
+            }
+        }
+
 
         // ====================================================
         // OSCURECER EL FONDO
@@ -43,34 +78,42 @@ public:
 
         this->addChild(overlay, 0);
 
+
         // ====================================================
-        // PANEL SQUARE01 - 9 SLICE
+        // PANEL SQUARE01
         // ====================================================
 
-        auto panel = CCScale9Sprite::createWithSpriteFrameName(
-            "square01_001.png"
-        );
+        auto panel =
+            CCScale9Sprite::create(
+                "square01_001.png"
+            );
 
         if (!panel) {
+
             log::error(
-                "Where Is This Icon?: No se pudo cargar "
-                "square01_001.png"
+                "Where Is This Icon?: "
+                "No se pudo cargar square01_001.png"
             );
 
             return true;
         }
 
+
+        // Tamaño del panel
         panel->setContentSize({
             420.f,
             280.f
         });
+
 
         panel->setPosition({
             winSize.width / 2.f,
             winSize.height / 2.f
         });
 
+
         this->addChild(panel, 1);
+
 
         // ====================================================
         // BOTÓN X
@@ -85,6 +128,7 @@ public:
 
             closeSprite->setScale(0.65f);
 
+
             auto closeButton =
                 CCMenuItemSpriteExtra::create(
                     closeSprite,
@@ -94,37 +138,61 @@ public:
                     )
                 );
 
+
             auto closeMenu = CCMenu::create();
 
+
+            // =================================================
+            // X EN LA ESQUINA SUPERIOR IZQUIERDA
+            //
+            // Panel = 420 x 280
+            // Esquina superior izquierda = -210, +140
+            // =================================================
+
             closeMenu->setPosition({
-                22.f,
-                258.f
+                0.f,
+                280.f
             });
+
 
             closeMenu->addChild(closeButton);
 
             panel->addChild(closeMenu, 10);
         }
 
+
         return true;
     }
 
-    // ========================================================
-    // BLOQUEAR TOQUES AL CREATORLAYER
-    // ========================================================
-
-    bool ccTouchBegan(
-        CCTouch* touch,
-        CCEvent* event
-    ) override {
-        return true;
-    }
 
     // ========================================================
     // CERRAR
     // ========================================================
 
     void onClose(CCObject*) {
+
+        // Restaurar los botones del CreatorLayer
+        if (m_creatorLayer) {
+
+            auto children =
+                m_creatorLayer->getChildren();
+
+            for (unsigned int i = 0; i < children->count(); i++) {
+
+                auto child =
+                    static_cast<CCNode*>(
+                        children->objectAtIndex(i)
+                    );
+
+                if (auto menu =
+                    typeinfo_cast<CCMenu*>(child)) {
+
+                    menu->setEnabled(true);
+                }
+            }
+        }
+
+
         this->removeFromParentAndCleanup(true);
     }
 };
@@ -144,8 +212,9 @@ class $modify(
         if (!CreatorLayer::init())
             return false;
 
+
         // ====================================================
-        // ICONO PERSONALIZADO
+        // ICONO
         // ====================================================
 
         auto sprite = CCSprite::create(
@@ -155,7 +224,9 @@ class $modify(
         if (!sprite)
             return true;
 
+
         sprite->setScale(0.225f);
+
 
         // ====================================================
         // BOTÓN
@@ -171,12 +242,14 @@ class $modify(
                 )
             );
 
+
         button->setID(
             "where-is-this-icon-button"_spr
         );
 
+
         // ====================================================
-        // MENÚ
+        // MENÚ DEL BOTÓN
         // ====================================================
 
         auto menu = CCMenu::create();
@@ -185,16 +258,20 @@ class $modify(
             "where-is-this-icon-menu"_spr
         );
 
+
         // ====================================================
-        // POSICIÓN AL LADO DEL BOTÓN BACK
+        // POSICIÓN JUNTO AL BOTÓN BACK
         // ====================================================
 
         auto backButton =
             this->getChildByID("back-button");
 
+
         if (backButton) {
 
-            auto pos = backButton->getPosition();
+            auto pos =
+                backButton->getPosition();
+
 
             menu->setPosition({
                 pos.x +
@@ -203,12 +280,12 @@ class $modify(
 
                 pos.y
             });
-
         }
         else {
 
             auto winSize =
                 CCDirector::sharedDirector()->getWinSize();
+
 
             menu->setPosition({
                 65.f,
@@ -216,9 +293,11 @@ class $modify(
             });
         }
 
+
         this->addChild(menu, 100);
 
         menu->addChild(button);
+
 
         return true;
     }
@@ -230,23 +309,30 @@ class $modify(
 
     void onWhereIsThisIcon(CCObject*) {
 
-        // No abrir dos paneles
+        // Ya está abierto
         if (this->getChildByID(
             "game-witi-menu-layer"
         ))
             return;
 
+
         auto panel =
-            GameWITIMenuLayer::create();
+            GameWITIMenuLayer::create(this);
+
 
         if (!panel)
             return;
+
 
         panel->setID(
             "game-witi-menu-layer"_spr
         );
 
-        // Encima de absolutamente todo
-        this->addChild(panel, 1000);
+
+        // Encima de TODO
+        this->addChild(
+            panel,
+            1000
+        );
     }
 };
