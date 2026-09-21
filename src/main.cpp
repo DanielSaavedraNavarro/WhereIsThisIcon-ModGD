@@ -15,8 +15,8 @@ class $modify(WhereIsThisIconCreatorLayer, CreatorLayer) {
             return true;
         }
 
-        // Tamaño pequeño, como los botones normales de GD
-        sprite->setScale(0.65f);
+        // Más pequeño
+        sprite->setScale(0.45f);
 
         auto button = CCMenuItemSpriteExtra::create(
             sprite,
@@ -28,18 +28,36 @@ class $modify(WhereIsThisIconCreatorLayer, CreatorLayer) {
 
         button->setID("where-is-this-icon-button"_spr);
 
-        // Menú independiente
         auto menu = CCMenu::create();
         menu->setID("where-is-this-icon-menu"_spr);
 
-        // Posición: esquina inferior izquierda
-        menu->setPosition({38.f, 38.f});
+        // Buscar el botón de salir del CreatorLayer
+        auto backButton = this->getChildByID("back-button");
 
-        // Encima de la decoración
-        menu->setZOrder(100);
+        if (backButton) {
+            auto pos = backButton->getPosition();
+
+            // A la derecha del botón de salir
+            menu->setPosition({
+                pos.x + backButton->getContentSize().width + 20.f,
+                pos.y
+            });
+        }
+        else {
+            // Fallback por si el ID cambia
+            auto winSize = CCDirector::sharedDirector()
+                ->getWinSize();
+
+            menu->setPosition({
+                55.f,
+                winSize.height - 35.f
+            });
+        }
+
+        // Sobre la decoración
+        this->addChild(menu, 100);
 
         menu->addChild(button);
-        this->addChild(menu, 100);
 
         return true;
     }
