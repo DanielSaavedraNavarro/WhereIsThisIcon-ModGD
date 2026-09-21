@@ -1,0 +1,11 @@
+{
+  "geode": "v5.10.1",
+  "gd": {
+    "android": "2.2081"
+  },
+  "id": "dani.where-is-this-icon",
+  "name": "Where Is This Icon?",
+  "version": "v1.0.0",
+  "developer": "Dani",
+  "description": "A fun Geometry Dash challenge that shows a randomly selected object from GJ_GameSheet03."
+}
