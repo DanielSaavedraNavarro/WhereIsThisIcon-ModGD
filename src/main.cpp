@@ -15,8 +15,8 @@ class $modify(WhereIsThisIconCreatorLayer, CreatorLayer) {
             return true;
         }
 
-        // Un poco más grande
-        sprite->setScale(1.15f);
+        // Tamaño pequeño, como los botones normales de GD
+        sprite->setScale(0.65f);
 
         auto button = CCMenuItemSpriteExtra::create(
             sprite,
@@ -28,11 +28,18 @@ class $modify(WhereIsThisIconCreatorLayer, CreatorLayer) {
 
         button->setID("where-is-this-icon-button"_spr);
 
+        // Menú independiente
         auto menu = CCMenu::create();
-        menu->setPosition({35.f, 35.f});
-        menu->addChild(button);
+        menu->setID("where-is-this-icon-menu"_spr);
 
-        this->addChild(menu);
+        // Posición: esquina inferior izquierda
+        menu->setPosition({38.f, 38.f});
+
+        // Encima de la decoración
+        menu->setZOrder(100);
+
+        menu->addChild(button);
+        this->addChild(menu, 100);
 
         return true;
     }
