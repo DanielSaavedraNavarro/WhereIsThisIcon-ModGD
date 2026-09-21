@@ -7,5 +7,10 @@
   "name": "Where Is This Icon?",
   "version": "v1.0.0",
   "developer": "Dani",
-  "description": "A fun Geometry Dash challenge that shows a randomly selected object from GJ_GameSheet03."
+  "description": "A fun Geometry Dash challenge that shows a randomly selected object from GJ_GameSheet03.",
+  "resources": {
+    "sprites": [
+      "resources/iconMenu.png"
+    ]
+  }
 }
