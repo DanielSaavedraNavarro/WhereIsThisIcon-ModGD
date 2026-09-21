@@ -11,7 +11,10 @@ protected:
             "Find this icon somewhere in Geometry Dash!",
             "OK",
             nullptr,
-            320.f
+            320.f,
+            false,
+            200.f,
+            1.f
         )) {
             return false;
         }
@@ -36,6 +39,9 @@ public:
 $on_mod(Loaded) {
     log::info("WHERE IS THIS ICON? loaded!");
 
-    // Prototype: show the challenge when the mod loads.
-    WhereIsThisIconLayer::create()->show();
+    auto layer = WhereIsThisIconLayer::create();
+
+    if (layer) {
+        layer->show();
+    }
 }
