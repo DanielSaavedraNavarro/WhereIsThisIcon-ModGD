@@ -8,10 +8,10 @@ class $modify(WhereIsThisIconCreatorLayer, CreatorLayer) {
         if (!CreatorLayer::init())
             return false;
 
-        auto sprite = CCSprite::create("infoMenu.png"_spr);
+        auto sprite = CCSprite::create("iconMenu.png"_spr);
 
         if (!sprite) {
-            log::error("No se pudo cargar infoMenu.png");
+            log::error("No se pudo cargar iconMenu.png");
             return true;
         }
 
@@ -28,17 +28,10 @@ class $modify(WhereIsThisIconCreatorLayer, CreatorLayer) {
 
         button->setID("where-is-this-icon-button"_spr);
 
-        // Menú independiente para poder posicionarlo fácilmente
         auto menu = CCMenu::create();
-        menu->setID("where-is-this-icon-menu"_spr);
-
-        // Esquina inferior izquierda
-        menu->setPosition({
-            35.f,
-            35.f
-        });
-
+        menu->setPosition({35.f, 35.f});
         menu->addChild(button);
+
         this->addChild(menu);
 
         return true;
