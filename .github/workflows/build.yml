@@ -12,16 +12,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Geode mod
-        id: build
+      # Android 32-bit
+      - name: Build Geode mod (Android32)
+        id: build-android32
         uses: geode-sdk/build-geode-mod@main
         with:
           sdk: given
           target: Android32
           build-config: Release
 
-      - name: Upload .geode
+      - name: Upload .geode (Android32)
         uses: actions/upload-artifact@v4
         with:
           name: WhereIsThisIcon-Android32
-          path: ${{ steps.build.outputs.build-output }}/*.geode
+          path: ${{ steps.build-android32.outputs.build-output }}/*.geode
+
+      # PC / Desktop
+      - name: Build Geode mod (Desktop)
+        id: build-desktop
+        uses: geode-sdk/build-geode-mod@main
+        with:
+          sdk: given
+          target: Desktop
+          build-config: Release
+
+      - name: Upload .geode (Desktop)
+        uses: actions/upload-artifact@v4
+        with:
+          name: WhereIsThisIcon-Desktop
+          path: ${{ steps.build-desktop.outputs.build-output }}/*.geode
