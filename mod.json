@@ -1,7 +1,8 @@
 {
   "geode": "5.10.1",
   "gd": {
-    "android": "2.2081"
+    "android": "2.2081",
+    "win": "2.2081"
   },
   "id": "dani.where-is-this-icon",
   "name": "Where Is This Icon?",
@@ -10,7 +11,8 @@
   "description": "A fun Geometry Dash challenge that shows a randomly selected object from GJ_GameSheet03.",
   "resources": {
     "sprites": [
-      "resources/iconMenu.png"
+      "resources/iconMenu.png",
+      "resources/btnLongTransparent.png"
     ]
   }
 }
