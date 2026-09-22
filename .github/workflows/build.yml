@@ -5,16 +5,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-android32:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Android 32-bit
       - name: Build Geode mod (Android32)
-        id: build-android32
+        id: build
         uses: geode-sdk/build-geode-mod@main
         with:
           sdk: given
@@ -25,11 +24,17 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WhereIsThisIcon-Android32
-          path: ${{ steps.build-android32.outputs.build-output }}/*.geode
+          path: ${{ steps.build.outputs.build-output }}/*.geode
 
-      # PC / Desktop
+  build-desktop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Build Geode mod (Desktop)
-        id: build-desktop
+        id: build
         uses: geode-sdk/build-geode-mod@main
         with:
           sdk: given
@@ -40,4 +45,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WhereIsThisIcon-Desktop
-          path: ${{ steps.build-desktop.outputs.build-output }}/*.geode
+          path: ${{ steps.build.outputs.build-output }}/*.geode
