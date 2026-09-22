@@ -27,26 +27,11 @@ jobs:
           path: ${{ steps.build.outputs.build-output }}/*.geode
 
   build-windows:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Install LLVM 19
-        run: |
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 19
-
-          echo "/usr/lib/llvm-19/bin" >> $GITHUB_PATH
-          echo "CC=/usr/lib/llvm-19/bin/clang" >> $GITHUB_ENV
-          echo "CXX=/usr/lib/llvm-19/bin/clang++" >> $GITHUB_ENV
-
-      - name: Check Clang version
-        run: |
-          clang --version
-          clang++ --version
 
       - name: Build Geode mod (Windows)
         id: build
