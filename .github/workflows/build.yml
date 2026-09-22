@@ -33,16 +33,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Geode mod (Desktop)
+      - name: Build Geode mod (Windows)
         id: build
         uses: geode-sdk/build-geode-mod@main
         with:
           sdk: given
-          target: Desktop
+          target: Win64
           build-config: Release
 
-      - name: Upload .geode (Desktop)
+      - name: Upload .geode (Windows)
         uses: actions/upload-artifact@v4
         with:
-          name: WhereIsThisIcon-Desktop
+          name: WhereIsThisIcon-Windows
           path: ${{ steps.build.outputs.build-output }}/*.geode
