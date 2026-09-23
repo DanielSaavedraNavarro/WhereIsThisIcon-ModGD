@@ -3,6 +3,64 @@
 
 using namespace geode::prelude;
 
+constexpr float ICON_BUTTON_GAP = 18.f;
+
+static CCSprite* findSpriteChild(CCNode* node) {
+    if (!node)
+        return nullptr;
+
+    auto children = node->getChildren();
+    if (!children)
+        return nullptr;
+
+    for (unsigned int i = 0; i < children->count(); i++) {
+        auto child = static_cast<CCNode*>(children->objectAtIndex(i));
+
+        if (auto sprite = typeinfo_cast<CCSprite*>(child))
+            return sprite;
+
+        if (auto sprite = findSpriteChild(child))
+            return sprite;
+    }
+
+    return nullptr;
+}
+
+static void getBoundsInNode(
+    CCNode* node,
+    CCNode* target,
+    float& minX,
+    float& maxX,
+    float& minY,
+    float& maxY
+) {
+    auto bounds = node->boundingBox();
+    auto parent = node->getParent();
+
+    auto bottomLeft = target->convertToNodeSpace(
+        parent->convertToWorldSpace({bounds.getMinX(), bounds.getMinY()})
+    );
+    auto bottomRight = target->convertToNodeSpace(
+        parent->convertToWorldSpace({bounds.getMaxX(), bounds.getMinY()})
+    );
+    auto topLeft = target->convertToNodeSpace(
+        parent->convertToWorldSpace({bounds.getMinX(), bounds.getMaxY()})
+    );
+    auto topRight = target->convertToNodeSpace(
+        parent->convertToWorldSpace({bounds.getMaxX(), bounds.getMaxY()})
+    );
+
+    minX = maxX = bottomLeft.x;
+    minY = maxY = bottomLeft.y;
+
+    for (auto point : {bottomRight, topLeft, topRight}) {
+        if (point.x < minX) minX = point.x;
+        if (point.x > maxX) maxX = point.x;
+        if (point.y < minY) minY = point.y;
+        if (point.y > maxY) maxY = point.y;
+    }
+}
+
 
 // ============================================================
 // GAME WITI MENU LAYER
@@ -279,9 +337,12 @@ class $modify(
             "where-is-this-icon-menu"_spr
         );
 
+        menu->addChild(button);
+        this->addChild(menu, 100);
+
 
         // ====================================================
-        // ALINEAR CON EL BOTÓN DE SALIDA
+        // ALINEAR CON EL SPRITE DEL BOTÓN DE SALIDA
         // ====================================================
 
         auto exitButton =
@@ -289,22 +350,28 @@ class $modify(
                 "exit-button"
             );
 
-        if (!exitButton) {
-            exitButton = this->getChildByID("back-button");
-        }
+        auto exitSprite = findSpriteChild(exitButton);
 
-        if (exitButton) {
+        if (exitSprite && exitSprite->getParent()) {
+            float targetMinX, targetMaxX, targetMinY, targetMaxY;
+            float iconMinX, iconMaxX, iconMinY, iconMaxY;
 
-            auto exitBounds =
-                exitButton->boundingBox();
+            getBoundsInNode(
+                exitSprite, this,
+                targetMinX, targetMaxX, targetMinY, targetMaxY
+            );
+            getBoundsInNode(
+                button, this,
+                iconMinX, iconMaxX, iconMinY, iconMaxY
+            );
+
+            auto menuPosition = menu->getPosition();
 
             menu->setPosition({
-                exitBounds.getMaxX() +
-                18.f,
-
-                exitBounds.getMidY()
+                menuPosition.x + targetMaxX + ICON_BUTTON_GAP - iconMinX,
+                menuPosition.y + (targetMinY + targetMaxY) / 2.f
+                    - (iconMinY + iconMaxY) / 2.f
             });
-
         }
         else {
 
@@ -317,14 +384,6 @@ class $modify(
                 winSize.height - 30.f
             });
         }
-
-
-        this->addChild(
-            menu,
-            100
-        );
-
-        menu->addChild(button);
 
 
         return true;
