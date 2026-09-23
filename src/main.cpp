@@ -281,24 +281,28 @@ class $modify(
 
 
         // ====================================================
-        // ALINEAR CON EL BOTÓN BACK
+        // ALINEAR CON EL BOTÓN DE SALIDA
         // ====================================================
 
-        auto backButton =
+        auto exitButton =
             this->getChildByID(
-                "back-button"
+                "exit-button"
             );
 
-        if (backButton) {
+        if (!exitButton) {
+            exitButton = this->getChildByID("back-button");
+        }
 
-            auto backBounds =
-                backButton->boundingBox();
+        if (exitButton) {
+
+            auto exitBounds =
+                exitButton->boundingBox();
 
             menu->setPosition({
-                backBounds.getMaxX() +
+                exitBounds.getMaxX() +
                 18.f,
 
-                backBounds.getMidY()
+                exitBounds.getMidY()
             });
 
         }
