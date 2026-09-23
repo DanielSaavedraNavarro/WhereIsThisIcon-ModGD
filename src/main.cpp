@@ -268,7 +268,7 @@ class $modify(
             "where-is-this-icon-button"_spr
         );
 
-        button->setPosition({-40.f, -30.f});
+        button->setPosition({-230.f, 100.f});
         button->setScale(0.75f);
 
 
