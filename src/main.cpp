@@ -247,7 +247,7 @@ class $modify(
         if (!sprite)
             return true;
 
-        sprite->setScale(0.225f);
+        sprite->setScale(0.207f);
 
 
         // ====================================================
@@ -281,7 +281,7 @@ class $modify(
 
 
         // ====================================================
-        // POSICIÓN JUNTO AL BOTÓN BACK
+        // ALINEAR CON EL BOTÓN BACK
         // ====================================================
 
         auto backButton =
@@ -291,15 +291,14 @@ class $modify(
 
         if (backButton) {
 
-            auto pos =
-                backButton->getPosition();
+            auto backBounds =
+                backButton->boundingBox();
 
             menu->setPosition({
-                pos.x +
-                backButton->getContentSize().width +
+                backBounds.getMaxX() +
                 18.f,
 
-                pos.y
+                backBounds.getMidY()
             });
 
         }
